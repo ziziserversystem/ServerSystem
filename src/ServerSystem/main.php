@@ -57,7 +57,7 @@ class main extends PluginBase implements Listener{
     private $array = [];
     private $count = [];
     //
-
+	
 	public function onEnable(){
 	    //ワールドロード
 		$server = \pocketmine\Server::getInstance();
@@ -90,85 +90,85 @@ class main extends PluginBase implements Listener{
 	}
 	
 	public function onChat(PlayerChatEvent $event){
-	    //Nospam
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        if($this->Spam2($player)){
-            $event->setCancelled();
-            $player->sendMessage("§a【運営】 §c連続での投稿は出来ません。");
-            $this->Spam($player);
-        }else{
-            if(array_key_exists($name,$this->count)){
-                unset($this->count[$name]);
-            }
-        }
-        //
-    }
-    
-    public function useCommand(PlayerCommandPreProcessEvent $event){
-        //NoSpam
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        $msg = $event->getMessage();
-        if(substr($msg,0,4) === "/me "){
-            if($this->Spam2($player)){
-                $event->setCancelled();
-                $player->sendMessage("§a【運営】 §c連続での投稿は出来ません。");
-                $this->Spam($player);
-            }else{
-                if(array_key_exists($name,$this->count)){
-                    unset($this->count[$name]);
+	        //Nospam
+		$player = $event->getPlayer();
+                $name = $player->getName();
+                if($this->Spam2($player)){
+                    $event->setCancelled();
+                    $player->sendMessage("§a【運営】 §c連続での投稿は出来ません。");
+                    $this->Spam($player);
+                }else{
+                    if(array_key_exists($name,$this->count)){
+                        unset($this->count[$name]);
+                    }
                 }
-            }
-         }elseif(substr($msg,0,5) === "./me "){
-             $event->setCancelled();
-             $player->sendMessage("§a【運営】 §fスパム防止のため「./me」は使えません。");
-         }elseif(substr($msg,0,3) === "/w " || substr($msg,0,4) === "./w "){
-             if($this->Spam2($player)){
-                 $event->setCancelled();
-                 $player->sendMessage("§a【運営】 §c連続での投稿は出来ません。");
-                 $this->Spam($player);
-             }else{
-                 if(array_key_exists($name,$this->count)){
-                     unset($this->count[$name]);
-                 }
-             }
-         }
-         //
-    }
-
-    public function onTap(PlayerInteractEvent $event){
-      //NoSpam
-      $player = $event->getPlayer();
-      $name = $player->getName();
-      $block = $event->getBlock();
-      $id = $block->getId();
-      if($id === 63 or $id === 68){
-        $sign = $player->getLevel()->getTile(new Vector3($block->x,$block->y,$block->z));
-        if($sign instanceof Tile){
-          $text = $sign->getText();
-          $str = $text[0].$text[1].$text[2].$text[3];
-          if(strpos($str,'##') !== false){
-            preg_match("/^##(.+[^\s])/",$str,$txt);
-            if(substr($txt[1],0,3) === "me "){
-              if($this->Spam2($player)){
-                $event->setCancelled();
-                $player->sendMessage("§a【運営】 §fme看板の連打はやめてください。");
-                $this->Spam($player);
-              }else{
-                if(array_key_exists($name,$this->count)){
-                  unset($this->count[$name]);
-                }
-              }
-            }
-          }
+                //
         }
-      }
-      //
-    }
     
-    public function onJoin(PlayerJoinEvent $event){
-        //SettingMessage
+	public function useCommand(PlayerCommandPreProcessEvent $event){
+		//NoSpam
+                $player = $event->getPlayer();
+                $name = $player->getName();
+                $msg = $event->getMessage();
+                if(substr($msg,0,4) === "/me "){
+			if($this->Spam2($player)){
+				$event->setCancelled();
+                                $player->sendMessage("§a【運営】 §c連続での投稿は出来ません。");
+                                $this->Spam($player);
+			}else{
+				if(array_key_exists($name,$this->count)){
+					unset($this->count[$name]);
+				}
+			}
+		}elseif(substr($msg,0,5) === "./me "){
+			$event->setCancelled();
+                        $player->sendMessage("§a【運営】 §fスパム防止のため「./me」は使えません。");
+	        }elseif(substr($msg,0,3) === "/w " || substr($msg,0,4) === "./w "){
+		        if($this->Spam2($player)){
+				$event->setCancelled();
+                                $player->sendMessage("§a【運営】 §c連続での投稿は出来ません。");
+                                $this->Spam($player);
+			}else{
+				if(array_key_exists($name,$this->count)){
+					unset($this->count[$name]);
+				}
+			}
+		}
+		//
+	}
+	
+	public function onTap(PlayerInteractEvent $event){
+		//NoSpam
+                $player = $event->getPlayer();
+                $name = $player->getName();
+                $block = $event->getBlock();
+                $id = $block->getId();
+                if($id === 63 or $id === 68){
+		        $sign = $player->getLevel()->getTile(new Vector3($block->x,$block->y,$block->z));
+                        if($sign instanceof Tile){
+			        $text = $sign->getText();
+                                $str = $text[0].$text[1].$text[2].$text[3];
+                                if(strpos($str,'##') !== false){
+				        preg_match("/^##(.+[^\s])/",$str,$txt);
+				        if(substr($txt[1],0,3) === "me "){
+					        if($this->Spam2($player)){
+						        $event->setCancelled();
+						        $player->sendMessage("§a【運営】 §fme看板の連打はやめてください。");
+						        $this->Spam($player);
+					        }else{
+						        if(array_key_exists($name,$this->count)){
+							        unset($this->count[$name]);
+						        }
+					        }
+				        }
+			        }
+		        }
+	        }
+	        //
+	}
+    
+        public function onJoin(PlayerJoinEvent $event){
+		//SettingMessage
 		$p = $event->getPlayer();
 		$message = "§l§e%nameさんがサーバーにやってきました";
 		$message_op = "§l§d権限者§f %name §eがサーバーにやってきました";
@@ -191,7 +191,7 @@ class main extends PluginBase implements Listener{
 	}
 
 	public function onQuit(PlayerQuitEvent $event){
-	    //SettingMessage
+	        //SettingMessage
 		$p = $event->getPlayer();
 		$message = "§l§e%nameさんがサーバーを去りました";
 		$message_op = "§l§d権限者 §f%name §eがサーバーを去りました";
@@ -212,43 +212,43 @@ class main extends PluginBase implements Listener{
 	}
 	//
     
-    //以下関数
+//以下関数
 	
 	//NoSpam
 	private function Spam($player){
-    $name = $player->getName();
-    if(array_key_exists($name,$this->count)){
-      if($this->count[$name] >= 3){
-        $player->kick("§a【運営】 §cあなたはスパムと判断され、kickされました",false);//「Kicked by admin」非表示
-        $this->getServer()->broadcastMessage("§a[運営] §f".$name."はスパムと判断されたためキックされました。");
-        unset($this->array[$name]);
-        unset($this->count[$name]);
-      }else{
-        $this->count[$name] += 1;
-      }
-    }else{
-      $this->count[$name] = 1;
-    }
-    }
+		$name = $player->getName();
+                if(array_key_exists($name,$this->count)){
+			if($this->count[$name] >= 3){
+				$player->kick("§a【運営】 §cあなたはスパムと判断され、kickされました",false);//「Kicked by admin」非表示
+                                $this->getServer()->broadcastMessage("§a[運営] §f".$name."はスパムと判断されたためキックされました。");
+                                unset($this->array[$name]);
+                                unset($this->count[$name]);
+			}else{
+				$this->count[$name] += 1;
+			}
+		}else{
+			$this->count[$name] = 1;
+		}
+	}
 
-    private function Spam2($player){
-      $name = $player->getName();
-      if(array_key_exists($name,$this->array)){
-        $now = time();
-        $last = $this->array[$name];
-        $time = $now - $last;
-        if($time <= 1){
-          return true;
-        }else{
-          $now = time();
-          $this->array[$name] = $now;
-          return false;
-        }
-      }else{
-        $now = time();
-        $this->array[$name] = $now;
-        return false;
-      }
-    }
-    //
+	private function Spam2($player){
+		$name = $player->getName();
+                if(array_key_exists($name,$this->array)){
+			$now = time();
+                        $last = $this->array[$name];
+                        $time = $now - $last;
+			if($time <= 1){
+				return true;
+			}else{
+				$now = time();
+                                $this->array[$name] = $now;
+                                return false;
+			}
+		}else{
+			$now = time();
+			$this->array[$name] = $now;
+			return false;
+		}
+	}
+	//
 }
